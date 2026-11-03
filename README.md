@@ -1,4 +1,4 @@
-# Product Catalogue for iOS
+# ProductCatalogiOS
 
 A UIKit + MVVM catalogue app with a blush pink theme, adaptive product cards, horizontal category browsing, search, product details, and product enquiries.
 
@@ -8,7 +8,13 @@ This repository contains the standalone iOS client. The Node.js backend is maint
 
 Requires **Xcode 16+**, **macOS**, and an iOS 16+ simulator or device. No third-party iOS dependencies or project generation are required.
 
-1. Open `ios/ProductCatalogue.xcodeproj`.
+1. Clone this repository:
+
+   ```sh
+   git clone https://github.com/suraj11kasasudhan/ProductCatalogiOS.git
+   cd ProductCatalogiOS
+   open ios/ProductCatalogue.xcodeproj
+   ```
 2. Select the **ProductCatalogue** scheme and an available iPhone simulator.
 3. Press **Run**.
 
