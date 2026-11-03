@@ -3,11 +3,14 @@
 A UIKit + MVVM catalogue app with a blush pink theme, adaptive product cards, horizontal category browsing, search, product details, and product enquiries.
 
 This repository contains the standalone iOS client. The Node.js backend is maintained separately on [`feat/catalogue-backend`](https://github.com/suraj11kasasudhan/ProductCatalogBackend/tree/feat/catalogue-backend). The hosted backend uses DummyJSON and exposes the product contract consumed by the app.
+
+
 <img width="430" height="963" alt="Screenshot 2026-11-03 at 9 15 47 PM" src="https://github.com/user-attachments/assets/1efb12d3-1812-443a-9032-5f3850f42863" />
 <img width="433" height="965" alt="Screenshot 2026-11-03 at 9 15 58 PM" src="https://github.com/user-attachments/assets/c4a35996-0dfc-410f-ac24-3686f99beccc" />
 <img width="432" height="965" alt="Screenshot 2026-11-03 at 9 16 06 PM" src="https://github.com/user-attachments/assets/7abd925f-5772-4c34-9e59-92954024f607" />
 <img width="438" height="962" alt="Screenshot 2026-11-03 at 9 16 15 PM" src="https://github.com/user-attachments/assets/958cd7a0-801f-4659-bb92-315d95c205ff" />
 <img width="434" height="965" alt="Screenshot 2026-11-03 at 9 16 25 PM" src="https://github.com/user-attachments/assets/752711bb-d39a-43f1-bfd7-ec63292ed715" />
+
 
 ## Run the app
 
