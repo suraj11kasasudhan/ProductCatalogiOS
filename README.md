@@ -26,14 +26,17 @@ https://productcatalogbackend-1.onrender.com/api
 
 If an older scheme defines `CATALOGUE_API_BASE_URL`, remove it or update it to this address, then stop and run again. Render's free service can take around a minute to wake after inactivity; retry if the first request fails.
 
-## App experience
+## App screens
 
-- **Browse:** five curated products and horizontally scrolling categories.
-- **Category:** separate Featured and More products groups.
-- **Search:** submit a product name or description with the keyboard Search button.
-- **Details:** product image, description, numeric price, rating, and an enquiry action.
-- **Enquiry:** validated contact fields and message, duplicate-submission prevention, and retryable errors. Confirmation requires backend email acceptance.
-- **Appearance:** baby pink backgrounds, rose accents, plum text, and a matching dark theme. The grid adapts to screen width and accessibility text sizes.
+| Screen | Functionality |
+| --- | --- |
+| **Catalogue** | Browse featured products and open a product category from the horizontal category chips. |
+| **Category** | Explore products in a selected category with images, prices, and ratings. |
+| **Product Details** | View a product’s image, description, price, and rating, then open its enquiry form. |
+| **Enquiry** | Enter your name, email, optional phone number, and message to enquire about the selected product. |
+| **Search** | Find products by name or description using the search field. |
+
+The app uses baby pink backgrounds, rose accents, plum text, and a matching dark theme. The product grid adapts to screen width and accessibility text sizes. Enquiry confirmation requires backend email acceptance; browsing does not establish email delivery.
 
 All product metadata comes through the backend. Product images use backend-provided URLs. No currency is invented when the backend supplies only a numeric price.
 
