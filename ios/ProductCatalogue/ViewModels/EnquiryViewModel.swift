@@ -34,11 +34,12 @@ final class EnquiryViewModel {
             let request = try draft.request(productID: product.id)
             state = .sending
             let confirmation = try await api.enquire(request)
-            guard !Task.isCancelled else { return }
             state = .sent(confirmation.message)
         } catch {
-            guard !Task.isCancelled, !(error is CancellationError) else { return }
-            state = .failed(error.localizedDescription)
+            // A cancelled POST may already have reached the server; do not retry automatically.
+            state = .failed(Task.isCancelled || error is CancellationError
+                ? "Sending was interrupted. Your enquiry may have been sent. Check before submitting again."
+                : error.localizedDescription)
         }
     }
 }

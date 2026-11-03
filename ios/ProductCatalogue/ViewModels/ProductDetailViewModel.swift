@@ -14,9 +14,9 @@ final class ProductDetailViewModel {
     }
 
     func load() async {
+        guard !Task.isCancelled else { return }
         let requestID = UUID()
         loadID = requestID
-        guard !Task.isCancelled else { return }
         state = .loading
         do {
             let product = try await api.product(id: productID)

@@ -128,6 +128,92 @@ final class ViewModelTests: XCTestCase {
         XCTAssertNil(model.errorMessage)
     }
 
+    @MainActor
+    func testAlreadyCancelledSearchDoesNotInvalidateActiveSearch() async throws {
+        let api = StubCatalogueAPI()
+        let product = try sampleProduct()
+        let started = expectation(description: "Search pending")
+        var pending: CheckedContinuation<[Product], Error>?
+        api.searchHandler = { _ in
+            try await withCheckedThrowingContinuation { continuation in
+                pending = continuation
+                started.fulfill()
+            }
+        }
+        let model = CatalogueViewModel(mode: .search, api: api)
+        let active = Task { await model.load(query: "cotton") }
+        await fulfillment(of: [started], timeout: 1)
+        let cancelled = Task { await model.load(query: "discarded") }
+        cancelled.cancel()
+        await cancelled.value
+        pending?.resume(returning: [product])
+        await active.value
+        guard case .loaded(let content) = model.state else { return XCTFail("Active result was discarded") }
+        XCTAssertEqual(content.sections.first?.products, [product])
+        XCTAssertEqual(api.searchTerms, ["cotton"])
+    }
+
+    @MainActor
+    func testAlreadyCancelledDetailLoadDoesNotInvalidateActiveLoad() async throws {
+        let api = StubCatalogueAPI()
+        let product = try sampleProduct()
+        let started = expectation(description: "Details pending")
+        var pending: CheckedContinuation<Product, Error>?
+        api.productHandler = { _ in
+            try await withCheckedThrowingContinuation { continuation in
+                pending = continuation
+                started.fulfill()
+            }
+        }
+        let model = ProductDetailViewModel(productID: 1, api: api)
+        let active = Task { await model.load() }
+        await fulfillment(of: [started], timeout: 1)
+        let cancelled = Task { await model.load() }
+        cancelled.cancel()
+        await cancelled.value
+        pending?.resume(returning: product)
+        await active.value
+        guard case .loaded(let loaded) = model.state else { return XCTFail("Active result was discarded") }
+        XCTAssertEqual(loaded, product)
+    }
+
+    @MainActor
+    func testInterruptedEnquiryUnlocksFormAndWarnsAboutUncertainDelivery() async throws {
+        let api = StubCatalogueAPI()
+        api.enquiryHandler = { _ in throw CancellationError() }
+        let model = EnquiryViewModel(product: try sampleProduct(), api: api)
+        await model.submit(EnquiryDraft(name: "Customer", email: "c@example.test", message: "Hello"))
+        XCTAssertFalse(model.isSending)
+        XCTAssertFalse(model.isSent)
+        XCTAssertTrue(model.errorMessage?.contains("may have been sent") == true)
+        XCTAssertEqual(api.submissions.count, 1)
+    }
+
+    @MainActor
+    func testConfirmedEnquiryIsNotLostWhenServiceReturnsAfterCancellation() async throws {
+        let api = StubCatalogueAPI()
+        let started = expectation(description: "Enquiry pending")
+        var pending: CheckedContinuation<Confirmation, Error>?
+        api.enquiryHandler = { _ in
+            try await withCheckedThrowingContinuation { continuation in
+                pending = continuation
+                started.fulfill()
+            }
+        }
+        let model = EnquiryViewModel(product: try sampleProduct(), api: api)
+        let submission = Task {
+            await model.submit(EnquiryDraft(name: "Customer", email: "c@example.test", message: "Hello"))
+        }
+        await fulfillment(of: [started], timeout: 1)
+        submission.cancel()
+        pending?.resume(returning: api.confirmation)
+        await submission.value
+        XCTAssertTrue(model.isSent)
+        XCTAssertFalse(model.isSending)
+        XCTAssertNil(model.errorMessage)
+        XCTAssertEqual(api.submissions.count, 1)
+    }
+
     func testDraftRejectsInvalidNamePhoneAndMessage() {
         XCTAssertThrowsError(try EnquiryDraft(name: "Two\nLines", email: "c@example.test", message: "Hello").request(productID: 1))
         XCTAssertThrowsError(try EnquiryDraft(name: "Customer", email: "c@example.test", phone: "letters", message: "Hello").request(productID: 1))

@@ -63,7 +63,7 @@ Controllers own cancellable tasks and forward navigation events. View models dep
 
 ## Tests and validation
 
-Run **Command-U** in Xcode. The test target contains **21 XCTest methods** covering loading and retry states, stale search responses, enquiry validation and duplicate prevention, endpoint encoding, response decoding, cancellation, and HTTP errors. Stubbed API tests need neither an external product API nor SMTP.
+Run **Command-U** in Xcode. The test target contains **25 XCTest methods** covering loading and retry states, stale search responses, enquiry validation and duplicate prevention, endpoint encoding, response decoding, cancellation, and HTTP errors. Stubbed API tests need neither an external product API nor SMTP.
 
 Swift syntax, Xcode project references, scheme/plist structure, repeatable project generation, and selected text/button contrast pairs have been checked in the Linux workspace. These checks do not establish an Xcode build, XCTest pass, or complete visual/accessibility review. The included GitHub Actions workflow runs the iOS build and tests on macOS for pushes and pull requests to `main`; inspect its result before treating the app as build-verified.
 

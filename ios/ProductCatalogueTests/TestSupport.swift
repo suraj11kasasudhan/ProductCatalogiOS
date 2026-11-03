@@ -12,6 +12,8 @@ final class StubCatalogueAPI: CatalogueServing {
     var categoryNames = ["men's clothing"]
     var failure: Error?
     var confirmation = Confirmation(message: "Thank you. Your enquiry has been sent.")
+    var productHandler: ((Int) async throws -> Product)?
+    var enquiryHandler: ((EnquiryRequest) async throws -> Confirmation)?
     var searchHandler: ((String) async throws -> [Product])?
     var searchTerms: [String] = []
     var submissions: [EnquiryRequest] = []
@@ -35,6 +37,7 @@ final class StubCatalogueAPI: CatalogueServing {
         return [ProductSection(title: "Featured", products: products)]
     }
     func product(id: Int) async throws -> Product {
+        if let productHandler { return try await productHandler(id) }
         if let failure { throw failure }
         guard let product = products.first(where: { $0.id == id }) else {
             throw APIError.rejected(status: 404, message: "Product not found.")
@@ -43,6 +46,7 @@ final class StubCatalogueAPI: CatalogueServing {
     }
     func enquire(_ enquiry: EnquiryRequest) async throws -> Confirmation {
         submissions.append(enquiry)
+        if let enquiryHandler { return try await enquiryHandler(enquiry) }
         if let failure { throw failure }
         return confirmation
     }

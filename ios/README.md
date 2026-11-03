@@ -75,7 +75,7 @@ xcodebuild test \
   CODE_SIGNING_ALLOWED=NO
 ```
 
-There are **21 XCTest methods** covering view-model states, search normalization, invalid forms, enquiry success/failure/retry, duplicate prevention, URL/query encoding, backend DTO decoding, HTTP errors and POST payloads. API tests inject URLProtocol responses and require neither external product APIs nor SMTP. The shared scheme disables parallel test execution because its protocol stub has one shared response handler.
+There are **25 XCTest methods** covering view-model states, search normalization, invalid forms, enquiry success/failure/retry, duplicate prevention, URL/query encoding, backend DTO decoding, HTTP errors and POST payloads. API tests inject URLProtocol responses and require neither external product APIs nor SMTP. The shared scheme disables parallel test execution because its protocol stub has one shared response handler.
 
 The separate `.github/workflows/ios.yml` GitHub Actions workflow includes a macOS job that selects an available iPhone simulator and runs the same Xcode test target. Inspect the workflow result before treating the app as build-verified.
 

@@ -16,9 +16,9 @@ final class CatalogueViewModel {
     }
 
     func load(query: String = "") async {
+        guard !Task.isCancelled else { return }
         let requestID = UUID()
         loadID = requestID
-        guard !Task.isCancelled else { return }
         let term = query.trimmingCharacters(in: .whitespacesAndNewlines)
         if mode.isSearch && term.isEmpty {
             state = .loaded(CatalogueContent(categories: [], sections: []))
