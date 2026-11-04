@@ -6,7 +6,7 @@ final class CatalogueView: UIView, UICollectionViewDataSource, UICollectionViewD
     var onSelectProduct: ((Int) -> Void)?
     var onRefresh: (() -> Void)?
     private let mode: CatalogueMode
-    private var content = CatalogueContent(categories: [], sections: [])
+    private var content = CatalogueContent.empty
     private let status = StatusView()
     private let refresh = UIRefreshControl()
     private lazy var collection = UICollectionView(frame: .zero, collectionViewLayout: layout())
@@ -35,7 +35,7 @@ final class CatalogueView: UIView, UICollectionViewDataSource, UICollectionViewD
     required init?(coder: NSCoder) { fatalError("Use programmatic initialization") }
 
     func render(_ state: LoadState<CatalogueContent>, emptySearch: Bool) {
-        content = CatalogueContent(categories: [], sections: [])
+        content = CatalogueContent.empty
         switch state {
         case .idle: break
         case .loading: status.show(message: "Gathering the collection for you…", loading: true)

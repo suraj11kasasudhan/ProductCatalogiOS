@@ -7,6 +7,7 @@ final class CatalogueViewModel {
     private(set) var state: LoadState<CatalogueContent> = .idle {
         didSet { onChange?() }
     }
+    private(set) var query = ""
     private var loadID = UUID()
     var onChange: (() -> Void)?
 
@@ -19,14 +20,14 @@ final class CatalogueViewModel {
         guard !Task.isCancelled else { return }
         let requestID = UUID()
         loadID = requestID
-        let term = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        if mode.isSearch && term.isEmpty {
-            state = .loaded(CatalogueContent(categories: [], sections: []))
+        self.query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        if mode.isSearch && self.query.isEmpty {
+            state = .loaded(.empty)
             return
         }
         state = .loading
         do {
-            let content = try await fetchContent(query: term)
+            let content = try await fetchContent(query: self.query)
             guard loadID == requestID, !Task.isCancelled else { return }
             state = .loaded(content)
         } catch {

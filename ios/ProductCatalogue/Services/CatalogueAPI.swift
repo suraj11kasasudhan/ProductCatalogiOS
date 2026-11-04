@@ -1,10 +1,6 @@
 import Foundation
 
 final class CatalogueAPI: CatalogueServing {
-    private struct ProductsResponse: Decodable { let products: [Product] }
-    private struct CategoriesResponse: Decodable { let categories: [String] }
-    private struct ProductResponse: Decodable { let product: Product }
-    private struct CategoryResponse: Decodable { let featured: [Product]; let products: [Product] }
     private let network: NetworkManaging
 
     init(network: NetworkManaging) {

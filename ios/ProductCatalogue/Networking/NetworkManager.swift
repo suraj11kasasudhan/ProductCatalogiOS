@@ -11,15 +11,11 @@ final class NetworkManager: NetworkManaging {
 
     init(baseURL: URL, session: URLSession? = nil) {
         self.baseURL = baseURL
-        if let session {
-            self.session = session
-        } else {
-            let configuration = URLSessionConfiguration.default
-            // Allow the hosted free-tier service time to wake after inactivity.
-            configuration.timeoutIntervalForRequest = 75
-            configuration.timeoutIntervalForResource = 90
-            self.session = URLSession(configuration: configuration)
-        }
+        let configuration = URLSessionConfiguration.default
+        // Allow the hosted free-tier service time to wake after inactivity.
+        configuration.timeoutIntervalForRequest = 75
+        configuration.timeoutIntervalForResource = 90
+        self.session = session ?? URLSession(configuration: configuration)
     }
 
     func send<Response: Decodable>(_ endpoint: APIEndpoint) async throws -> Response {

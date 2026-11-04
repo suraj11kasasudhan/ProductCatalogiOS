@@ -69,7 +69,7 @@ final class ProductDetailView: UIView {
             status.isHidden = true
             enquiry.isEnabled = true
             productImage.load(product.imageUrl)
-            category.text = product.category.replacingOccurrences(of: "-", with: " ").uppercased()
+            category.text = product.displayCategory
             name.text = product.title
             price.text = "Price · \(product.displayPrice)"
             rating.text = "★ \(product.rating.value.formatted()) / 5 · \(product.rating.count) reviews"

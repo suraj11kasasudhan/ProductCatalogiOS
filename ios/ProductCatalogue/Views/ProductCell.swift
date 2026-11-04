@@ -34,7 +34,7 @@ final class ProductCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("Use programmatic initialization") }
 
     func configure(with product: Product) {
-        category.text = product.category.replacingOccurrences(of: "-", with: " ").uppercased()
+        category.text = product.displayCategory
         title.text = product.title
         price.text = "Price · \(product.displayPrice)"
         rating.text = "★ \(product.rating.value.formatted()) · \(product.rating.count) reviews"

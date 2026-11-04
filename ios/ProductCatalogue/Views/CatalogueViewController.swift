@@ -4,7 +4,6 @@ final class CatalogueViewController: UIViewController, UISearchBarDelegate {
     private let viewModel: CatalogueViewModel
     private let catalogueView: CatalogueView
     private var task: Task<Void, Never>?
-    private var query = ""
     var onSelectCategory: ((String) -> Void)?
     var onSelectProduct: ((Int) -> Void)?
 
@@ -26,7 +25,7 @@ final class CatalogueViewController: UIViewController, UISearchBarDelegate {
         catalogueView.onRefresh = { [weak self] in self?.reload() }
         viewModel.onChange = { [weak self] in
             guard let self else { return }
-            catalogueView.render(viewModel.state, emptySearch: viewModel.mode.isSearch && query.isEmpty)
+            catalogueView.render(viewModel.state, emptySearch: viewModel.mode.isSearch && viewModel.query.isEmpty)
         }
         if viewModel.mode.isSearch {
             let search = UISearchController(searchResultsController: nil)
@@ -42,22 +41,20 @@ final class CatalogueViewController: UIViewController, UISearchBarDelegate {
         reload()
     }
 
-    private func reload() {
+    private func reload(query: String? = nil) {
         task?.cancel()
         let model = viewModel
-        let query = query
+        let query = query ?? model.query
         task = Task { await model.load(query: query) }
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        query = (searchBar.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         searchBar.resignFirstResponder()
-        reload()
+        reload(query: searchBar.text ?? "")
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        query = ""
-        reload()
+        reload(query: "")
     }
 
     deinit { task?.cancel() }

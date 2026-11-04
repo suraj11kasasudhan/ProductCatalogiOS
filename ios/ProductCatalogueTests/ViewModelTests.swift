@@ -20,8 +20,10 @@ final class ViewModelTests: XCTestCase {
         let model = CatalogueViewModel(mode: .search, api: api)
         await model.load(query: "   ")
         XCTAssertTrue(api.searchTerms.isEmpty)
+        XCTAssertEqual(model.query, "")
         await model.load(query: " cotton ")
         XCTAssertEqual(api.searchTerms, ["cotton"])
+        XCTAssertEqual(model.query, "cotton")
         guard case .loaded(let content) = model.state else { return XCTFail("Expected results") }
         XCTAssertEqual(content.sections.first?.products.count, 1)
     }
@@ -151,6 +153,7 @@ final class ViewModelTests: XCTestCase {
         guard case .loaded(let content) = model.state else { return XCTFail("Active result was discarded") }
         XCTAssertEqual(content.sections.first?.products, [product])
         XCTAssertEqual(api.searchTerms, ["cotton"])
+        XCTAssertEqual(model.query, "cotton")
     }
 
     @MainActor
