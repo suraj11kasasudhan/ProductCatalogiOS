@@ -48,6 +48,14 @@ The app uses baby pink backgrounds, rose accents, plum text, and a matching dark
 
 All product metadata comes through the backend. Product images use backend-provided URLs. No currency is invented when the backend supplies only a numeric price.
 
+## Product provider and AI development
+
+Fake Store was the original provider, but our Render backend received HTTP 403 Cloudflare browser challenges instead of product JSON. Browser access worked; changing Render regions did not resolve server access. With the author's approval, the backend switched to **DummyJSON**, preserving the API used by this app. This departure from the original Fake Store requirement is intentional and disclosed.
+
+The author reports **approximately four hours** for the initial design and implementation of both frontend and backend. **All code was written using AI**, with the author supplying requirements, design direction and feedback. The estimate is author-reported; it does not certify all later revisions or testing within that period.
+
+See [agent guidance](AGENTS.md), [implementation decisions](ios/DECISIONS.md), and [AI authorship](ios/AI_USAGE.md) for the workflow, rationale and verification limits.
+
 ## Code structure
 
 | Folder | Responsibility |
@@ -63,9 +71,9 @@ Controllers own cancellable tasks and forward navigation events. View models dep
 
 ## Tests and validation
 
-Run **Command-U** in Xcode. The test target contains **25 XCTest methods** covering loading and retry states, stale search responses, enquiry validation and duplicate prevention, endpoint encoding, response decoding, cancellation, and HTTP errors. Stubbed API tests need neither an external product API nor SMTP.
+Run **Command-U** in Xcode. The test target contains **28 XCTest methods** covering loading and retry states, stale search responses, enquiry validation and duplicate prevention, endpoint encoding, response decoding, cancellation, and HTTP errors. Stubbed API tests need neither an external product API nor SMTP.
 
-Swift syntax, Xcode project references, scheme/plist structure, repeatable project generation, and selected text/button contrast pairs have been checked in the Linux workspace. These checks do not establish an Xcode build, XCTest pass, or complete visual/accessibility review. The included GitHub Actions workflow runs the iOS build and tests on macOS for pushes and pull requests to `main`; inspect its result before treating the app as build-verified.
+Swift syntax, Xcode project references, scheme/plist structure, repeatable project generation, and selected text/button contrast pairs have been checked in the Linux workspace. These checks do not establish an Xcode build, XCTest pass, or complete visual/accessibility review. The included GitHub Actions workflow runs the iOS build and tests on macOS for pushes and pull requests to `main` and retains the Xcode result bundle as the `ios-test-results` artifact. Inspect the result for the matching commit before treating the app as build-verified.
 
 The user has confirmed that the hosted catalogue returns product data. Production enquiry email still requires separate SMTP/provider configuration; browsing does not verify email delivery.
 

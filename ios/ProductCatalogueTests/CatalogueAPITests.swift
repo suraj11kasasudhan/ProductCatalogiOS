@@ -162,3 +162,41 @@ final class CatalogueAPITests: XCTestCase {
         catch { XCTFail("Unexpected error: \(error)") }
     }
 }
+
+private final class StubNetworkManager: NetworkManaging {
+    var data = Data()
+    var error: Error?
+    private(set) var endpoints: [APIEndpoint] = []
+
+    func send<Response: Decodable>(_ endpoint: APIEndpoint) async throws -> Response {
+        endpoints.append(endpoint)
+        if let error { throw error }
+        return try JSONDecoder().decode(Response.self, from: data)
+    }
+}
+
+extension CatalogueAPITests {
+    func testServiceMapsCategoryGroupsUsingInjectedNetworkManager() async throws {
+        let network = StubNetworkManager()
+        network.data = Data("{\"featured\":[\(productJSON)],\"products\":[]}".utf8)
+        let service = CatalogueAPI(network: network)
+        let sections = try await service.category("men's clothing")
+        XCTAssertEqual(sections.map(\.title), ["Featured"])
+        XCTAssertEqual(sections.first?.products, [try sampleProduct()])
+        XCTAssertEqual(network.endpoints.count, 1)
+        XCTAssertEqual(network.endpoints.first?.pathComponents, ["categories", "men's clothing", "products"])
+    }
+
+    func testServicePreservesInjectedNetworkFailure() async {
+        let network = StubNetworkManager()
+        network.error = APIError.rejected(status: 503, message: "Try later")
+        do {
+            _ = try await CatalogueAPI(network: network).featured()
+            XCTFail("Expected injected error")
+        } catch APIError.rejected(let status, let message) {
+            XCTAssertEqual(status, 503)
+            XCTAssertEqual(message, "Try later")
+        } catch { XCTFail("Unexpected error: \(error)") }
+        XCTAssertEqual(network.endpoints.count, 1)
+    }
+}

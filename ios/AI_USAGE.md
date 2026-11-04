@@ -1,13 +1,11 @@
-# iOS AI usage
+# AI authorship and development process
 
-The user requested a Swift UIKit + MVVM frontend integrated with the existing Node API, then asked for separate backend and frontend PRs into main.
+All code for the iOS frontend and Node.js backend was written using AI. OpenAI Codex generated application code, tests, project configuration, documentation, and subsequent refactors. The project author supplied requirements and design choices, ran local simulator/browser checks, provided screenshots/logs, and authorized changes. No parallel agents were used in this session.
 
-OpenAI Codex (the GPT-6-based assistant available in the session; exact variant not exposed) generated the UIKit screens, URLSession client, dependency-injected view models, XCTest cases, project generator and documentation. No parallel agents were used. No agent instruction files or secrets were added.
+The author reports approximately four hours for the initial frontend/backend design and implementation combined. This is an author-provided estimate, not a measured activity log, and does not imply that all later revisions, deployment diagnosis, or test verification occurred within that period.
 
-Key directions were to use native UIKit/MVVM, preserve backend ownership of product data, show enquiry success only after the backend confirms sending, and make simulator development possible without deployment. The checked-in Xcode project avoids requiring XcodeGen on the reviewer's Mac.
+Key human-directed decisions were UIKit + MVVM, backend-owned product data, a separate public iOS repository, smaller screen controllers, initializer-based dependency injection, and the blush pink theme. Fake Store was replaced with DummyJSON only after Render logs confirmed Cloudflare browser challenges and the author approved a provider change. See DECISIONS.md for the rationale and requirement tradeoff.
 
-Review corrected optional URL-scheme handling, made cancelled request results unable to replace current screen state, and avoided controller/task retain cycles. Preliminary checks used Swift syntax and Xcode-project parsers. These are not compilation or XCTest execution. The Linux workspace has no Xcode, Swift compiler or iOS simulator; macOS CI and manual integration remain required.
+Review retained cancellation and stale-response protection, enquiry duplicate prevention and uncertain-delivery handling, and reusable views rather than adding broad architecture abstractions. Unit tests use stub services, injected network managers and URLProtocol; controller routing is tested through an injected screen factory.
 
-The original combined frontend commit was preserved on a local backup branch. A non-destructive revert removes it from the backend PR's final diff. This independent branch carries only the frontend and its own docs/workflow.
-
-Human review and ownership remain required. The submitter should record actual planning, implementation, macOS testing and review time before submitting; do not treat assistant execution time as a human time log.
+The Linux workspace cannot build UIKit or execute iOS XCTest. Syntax and project validation are not test-pass evidence. Record the macOS CI or local Xcode outcome for the matching commit before claiming unit tests passed. All AI-generated work remains subject to human review and ownership.
